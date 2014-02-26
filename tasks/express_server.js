@@ -68,7 +68,7 @@ module.exports = function(grunt) {
 
     this.start = function start(cb) {
       if (this.server) {
-        this.stop(function() {this._start(cb);});
+        this.stop(function() {this._start(cb);}.bind(this));
       }
       else {
         this._start(cb);
