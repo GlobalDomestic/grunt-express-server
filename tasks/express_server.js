@@ -135,8 +135,18 @@ module.exports = function(grunt) {
         }
       }
       else {
+        grunt.log.write('Starting foreground ExpressJS app...');
         this.server = require(this.options.script);
-        grunt.log.writeln('ExpressJS app running (use SIGINT to stop)...'.green);
+        if (this.server.close) {
+          this.server.once('listening', function () {
+            grunt.log.ok();
+            grunt.log.writeln('ExpressJS app running (use SIGINT to stop)...'.green);
+          });
+        }
+        else {
+          grunt.log.ok();
+          grunt.log.writeln('ExpressJS app running (use SIGINT to stop)...'.green);
+        }
         // Since this is a foreground process, it will halt
         // GruntJS until the cb is executed.
         process.once('SIGINT', this.stop.bind(this,cb));
