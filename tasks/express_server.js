@@ -165,9 +165,10 @@ module.exports = function(grunt) {
     this.stop = function stop(cb) {
       grunt.log.write('Stopping ExpressJS app...');
 
-      var scb = function () {
+      var cbPrime = function () {
         grunt.log.ok();
         delete this.server;
+        process.removeAllListeners();
         cb();
       }.bind(this);
 
@@ -175,18 +176,18 @@ module.exports = function(grunt) {
 
       if (this.server) {
         if (this.server.pid) {
-          this.server.once('exit', scb);
+          this.server.once('exit', cbPrime);
           this.server.kill();
         }
         else if (this.server.close) {
-          this.server.close(scb);
+          this.server.close(cbPrime);
         }
         else {
-          scb();
+          cbPrime();
         }
       }
       else {
-        scb();
+        cbPrime();
       }
     };
   }
